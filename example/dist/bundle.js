@@ -182,8 +182,8 @@ var Mixin = {
 			if (movement.x <= this.props.moveThreshold && movement.y <= this.props.moveThreshold && this.props.onTap) {
 				event.preventDefault();
 				afterEndTouch = function () {
-					var scroll = node.syntheticScrollTop ? node.syntheticScrollTop : node.scrollTop;
 					var finalParentScrollPos = _this._scrollParents.map(function (node) {
+						var scroll = node.syntheticScrollTop ? node.syntheticScrollTop : node.scrollTop;
 						return scroll + node.scrollLeft;
 					});
 					var stoppedMomentumScroll = _this._scrollParentPos.some(function (end, i) {
