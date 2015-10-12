@@ -94,9 +94,10 @@ var Mixin = {
 		var node = this.getDOMNode();
 		while (node) {
 			if (node.scrollHeight > node.offsetHeight || node.scrollWidth > node.offsetWidth) {
+				var scrollTop = node.syntheticScrollTop ? node.syntheticScrollTop : node.scrollTop;
 				this._scrollParents.push(node);
-				this._scrollParentPos.push(node.scrollTop + node.scrollLeft);
-				this._scrollPos.top += node.scrollTop;
+				this._scrollParentPos.push(scrollTop + node.scrollLeft);
+				this._scrollPos.top += scrollTop;
 				this._scrollPos.left += node.scrollLeft;
 			}
 			node = node.parentNode;
@@ -113,7 +114,8 @@ var Mixin = {
 	detectScroll: function () {
 		var currentScrollPos = { top: 0, left: 0 };
 		for (var i = 0; i < this._scrollParents.length; i++) {
-			currentScrollPos.top += this._scrollParents[i].scrollTop;
+			var scrollTop = this._scrollParents[i].syntheticScrollTop ? this._scrollParents[i].syntheticScrollTop : this._scrollParents[i].scrollTop;
+			currentScrollPos.top += scrollTop;
 			currentScrollPos.left += this._scrollParents[i].scrollLeft;
 		}
 		return !(currentScrollPos.top === this._scrollPos.top && currentScrollPos.left === this._scrollPos.left);
@@ -177,7 +179,8 @@ var Mixin = {
 			if (movement.x <= this.props.moveThreshold && movement.y <= this.props.moveThreshold && this.props.onTap) {
 				event.preventDefault();
 				afterEndTouch = () => {
-					var finalParentScrollPos = this._scrollParents.map(node => node.scrollTop + node.scrollLeft);
+					var scroll = node.syntheticScrollTop ? node.syntheticScrollTop : node.scrollTop;
+					var finalParentScrollPos = this._scrollParents.map(node => scroll + node.scrollLeft);
 					var stoppedMomentumScroll = this._scrollParentPos.some((end, i) => {
 						return end !== finalParentScrollPos[i];
 					});

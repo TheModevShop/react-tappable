@@ -12,9 +12,10 @@ module.exports.touchStyles = touchStyles;
 module.exports.Mixin = TappableMixin;
 
 },{"./TappableMixin":2,"./getComponent":3,"./touchStyles":4}],2:[function(require,module,exports){
+(function (global){
 'use strict';
 
-var React = (window.React);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 function getTouchProps(touch) {
 	if (!touch) return {};
@@ -108,9 +109,10 @@ var Mixin = {
 		var node = this.getDOMNode();
 		while (node) {
 			if (node.scrollHeight > node.offsetHeight || node.scrollWidth > node.offsetWidth) {
+				var scrollTop = node.syntheticScrollTop ? node.syntheticScrollTop : node.scrollTop;
 				this._scrollParents.push(node);
-				this._scrollParentPos.push(node.scrollTop + node.scrollLeft);
-				this._scrollPos.top += node.scrollTop;
+				this._scrollParentPos.push(scrollTop + node.scrollLeft);
+				this._scrollPos.top += scrollTop;
 				this._scrollPos.left += node.scrollLeft;
 			}
 			node = node.parentNode;
@@ -127,7 +129,8 @@ var Mixin = {
 	detectScroll: function detectScroll() {
 		var currentScrollPos = { top: 0, left: 0 };
 		for (var i = 0; i < this._scrollParents.length; i++) {
-			currentScrollPos.top += this._scrollParents[i].scrollTop;
+			var scrollTop = this._scrollParents[i].syntheticScrollTop ? this._scrollParents[i].syntheticScrollTop : this._scrollParents[i].scrollTop;
+			currentScrollPos.top += scrollTop;
 			currentScrollPos.left += this._scrollParents[i].scrollLeft;
 		}
 		return !(currentScrollPos.top === this._scrollPos.top && currentScrollPos.left === this._scrollPos.left);
@@ -193,8 +196,9 @@ var Mixin = {
 			if (movement.x <= this.props.moveThreshold && movement.y <= this.props.moveThreshold && this.props.onTap) {
 				event.preventDefault();
 				afterEndTouch = function () {
+					var scroll = node.syntheticScrollTop ? node.syntheticScrollTop : node.scrollTop;
 					var finalParentScrollPos = _this._scrollParents.map(function (node) {
-						return node.scrollTop + node.scrollLeft;
+						return scroll + node.scrollLeft;
 					});
 					var stoppedMomentumScroll = _this._scrollParentPos.some(function (end, i) {
 						return end !== finalParentScrollPos[i];
@@ -292,12 +296,14 @@ var Mixin = {
 
 module.exports = Mixin;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
+(function (global){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = (window.React);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 var touchStyles = require('./touchStyles');
 
 /**
@@ -360,6 +366,7 @@ module.exports = function (mixins) {
 	});
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./touchStyles":4}],4:[function(require,module,exports){
 'use strict';
 
