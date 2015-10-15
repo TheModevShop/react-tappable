@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Tappable = require('react-tappable');
 
 var App = React.createClass({
@@ -8,7 +9,7 @@ var App = React.createClass({
 		};
 	},
 	componentDidUpdate: function () {
-		var log = this.refs.eventLog.getDOMNode();
+		var log = this.refs.eventLog;
 		log.scrollTop = log.scrollHeight;
 	},
 	handleEvent: function (name/*, event*/) {
@@ -46,4 +47,4 @@ var App = React.createClass({
 	}
 });
 
-React.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));
